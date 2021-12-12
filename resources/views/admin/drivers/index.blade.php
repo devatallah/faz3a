@@ -1,0 +1,281 @@
+@extends('admin.layout.app')
+@section('title')
+    @lang('common.drivers')
+@endsection
+@section('css')
+@endsection
+@section('styles')
+@endsection
+@section('content')
+
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing">
+
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
+                <div class="widget-header">
+                    <h3>@lang('common.drivers')</h3>
+                </div>
+                <br>
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{url('admin')}}"><i class="fa fa-lg fa-home"></i></a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="{{url('admin/drivers')}}">@lang('common.drivers')</a></li>
+                    </ol>
+                </nav>
+                <br>
+                <br>
+                <div class="widget-content-area br-4">
+                    <div class="widget-one">
+
+                        <div class="widget-content widget-content-area">
+                            <form id="search_form">
+                                <div class="form-row">
+                                    <div class="form-group col-md-2">
+                                        <label for="s_name">@lang('common.name')</label>
+                                        <input type="text" class="form-control" id="s_name"
+                                               placeholder="@lang('common.name')">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_email">@lang('common.email')</label>
+                                        <input type="text" class="form-control" id="s_email"
+                                               placeholder="@lang('common.email')">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_mobile">@lang('common.mobile')</label>
+                                        <input type="text" class="form-control" id="s_mobile"
+                                               placeholder="@lang('common.mobile')">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_is_available">@lang('common.is_available')</label>
+                                        <select id="s_is_available">
+                                            <option selected value="">@lang('common.select')</option>
+                                            <option value="yes">@lang('common.yes')</option>
+                                            <option value="no">@lang('common.no')</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_gender">@lang('common.gender')</label>
+                                        <select id="s_gender">
+                                            <option selected value="">@lang('common.select')</option>
+                                            <option value="male">@lang('common.male')</option>
+                                            <option value="female">@lang('common.female')</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_id_no">@lang('common.id_no')</label>
+                                        <input type="text" class="form-control" id="s_id_no"
+                                               placeholder="@lang('common.id_no')">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_plate_no">@lang('common.plate_no')</label>
+                                        <input type="text" class="form-control" id="s_plate_no"
+                                               placeholder="@lang('common.plate_no')">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_trip_type_id">@lang('common.trip_type')</label>
+                                        <select id="s_trip_type_id">
+                                            <option selected value="">@lang('common.select')</option>
+                                        @foreach($trip_types as $trip_type)
+                                                <option value="{{$trip_type->id}}">{{$trip_type->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_vehicle_type_id">@lang('common.vehicle_type')</label>
+                                        <select id="s_vehicle_type_id">
+                                            <option selected value="">@lang('common.select')</option>
+                                            @foreach($vehicle_types as $vehicle_type)
+                                                <option value="{{$vehicle_type->id}}">{{$vehicle_type->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="s_service_id">@lang('common.service')</label>
+                                        <select id="s_service_id">
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-3 align-self-end" style="margin-bottom: 20px;">
+                                        <input type="submit" id="search_btn"
+                                               class="btn btn-info" value="@lang('common.search')">
+                                        <input type="submit" id="clear_btn"
+                                               class="btn btn-default" value="@lang('common.cancel')">
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="form-group" style="text-align: end">
+                                {{--                            @if(auth()->user()->hasAnyPermission(['add_drivers']))--}}
+                                <a href="{{url('admin/drivers/create')}}" id="info" class="btn btn-primary"><i
+                                        class="fa fa-plus"></i> @lang('common.add')</a>
+                                <a href="{{url('admin/drivers/track')}}" class="btn btn-warning"><i
+                                        class="fa fa-map-marker"></i> @lang('common.track')</a>
+                                {{--                            @endif--}}
+                                {{--                            @if(auth()->user()->hasAnyPermission(['delete_drivers']))--}}
+                                <button disabled="disabled" id="delete_btn" class="delete-btn btn btn-danger"><i
+                                        class="fa fa-lg fa-trash-o"></i> @lang('common.delete')</button>
+                                {{--                            @endif--}}
+                            </div>
+                            <div class="table-responsive mb-4">
+                                <table id="datatable" class="table style-1 datatable table-hover"
+                                       style="margin-top: 15px !important;">
+                                    <thead>
+                                    <tr>
+                                        <th class="checkbox-column sorting_disabled" rowspan="1" colspan="1"
+                                            style="width: 35px;" aria-label=" Record Id ">
+                                            <label
+                                                class="new-control new-checkbox checkbox-outline-primary m-auto">
+                                                <input id="select_all" type="checkbox"
+                                                       class="new-control-input chk-parent select-customers-info">
+                                                <span class="new-control-indicator"></span><span
+                                                    style="visibility:hidden">&nbsp;</span>
+                                            </label></th>
+                                        <th>@lang('common.id')</th>
+                                        <th>@lang('common.name')</th>
+                                        <th>@lang('common.email')</th>
+                                        <th>@lang('common.mobile')</th>
+                                        <th>@lang('common.is_available')</th>
+                                                                            <th>@lang('common.create_date')</th>
+                                        <th>@lang('common.actions')</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- CONTENT AREA -->
+
+    </div>
+
+
+
+@endsection
+@section('js')
+
+@endsection
+@section('scripts')
+    <script>
+        var url = '{{url(app()->getLocale()."/admin/drivers")}}/';
+
+        var oTable = $('#datatable').DataTable({
+            "oLanguage": {
+                @if(app()->isLocale('ar'))
+                "sEmptyTable": "ليست هناك بيانات متاحة في الجدول",
+                "sLoadingRecords": "جارٍ التحميل...",
+                "sProcessing": "جارٍ التحميل...",
+                "sLengthMenu": "أظهر _MENU_ مدخلات",
+                "sZeroRecords": "لم يعثر على أية سجلات",
+                "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+                "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجل",
+                "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+                "sInfoPostFix": "",
+                "sSearch": "ابحث:",
+                "oAria": {
+                    "sSortAscending": ": تفعيل لترتيب العمود تصاعدياً",
+                    "sSortDescending": ": تفعيل لترتيب العمود تنازلياً"
+                },
+
+                "oPaginate": {
+                    "sPrevious": '<i class="fa fa-arrow-right"></i>',
+                    "sNext": '<i class="fa fa-arrow-left"></i>'
+                },
+                @else
+                "oPaginate": {
+                    "sPrevious": '<i class="fa fa-arrow-left"></i>',
+                    "sNext": '<i class="fa fa-arrow-right"></i>'
+                },
+                @endif// "oPaginate": {"sPrevious": '<-', "sNext": '->'},
+            },
+            'columnDefs': [
+                {
+                    "targets": 1,
+                    "visible": false
+                },
+                {
+                    'targets': 0,
+                    "searchable": false,
+                    "orderable": false
+                },
+            ],
+            // dom: 'lrtip',
+            "order": [[1, 'asc']],
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ajax: {
+                url: '{{ url('/admin/drivers/indexTable')}}',
+                data: function (d) {
+                    d.is_available = $('#s_is_available').val();
+                    d.name = $('#s_name').val();
+                    d.email = $('#s_email').val();
+                    d.mobile = $('#s_mobile').val();
+                    d.gender = $('#s_gender').val();
+                    d.id_no = $('#s_id_no').val();
+                    d.plate_no = $('#s_plate_no').val();
+                    d.trip_type_id = $('#s_trip_type_id').val();
+                    d.service_id = $('#s_service_id').val();
+                    d.vehicle_type_id = $('#s_vehicle_type_id').val();
+                }
+            },
+            columns: [
+                {
+                    "render": function (data, type, full, meta) {
+                        return `<td class="checkbox-column sorting_1">
+                                    <label class="new-control new-checkbox checkbox-outline-primary  m-auto">
+                                        <input type="checkbox" class="table_ids new-control-input child-chk select-customers-info"
+                                         name="table_ids[]" value="` + full.id + `"><span class="new-control-indicator"></span>
+                                            <span style="visibility:hidden">&nbsp;</span>
+                                    </label>
+                                </td>`;
+                    }
+                },
+
+                {data: 'id', name: 'id'},
+                {data: 'name', name: 'name'},
+                {data: 'email', name: 'email'},
+                {data: 'mobile', name: 'mobile'},
+                {data: 'is_available_text', name: 'is_available'},
+                {data: 'create_date', name: 'created_at'},
+                {data: 'action', name: 'action', orderable: false, searchable: false}]
+        });
+
+        $(document).ready(function () {
+            oTable.on('draw', function () {
+                $("#select_all").prop("checked", false)
+                $('#delete_btn').prop('disabled', 'disabled');
+                $('.status_btn').prop('disabled', 'disabled');
+            });
+
+            var services_list = {
+                @foreach($vehicle_types as $vehicle_type)
+                'vehicle_type_{{$vehicle_type->id}}': [
+                        @foreach($vehicle_type->services as $services)
+                    {
+                        id: '{{$services->id}}',
+                        text: '{{$services->name}}',
+                    },
+
+                    @endforeach
+                ],
+                @endforeach
+            };
+
+            $(document).on("change", "#vehicle_type_id", function (e) {
+                var value = $(this).val();
+                $("#service_ids").html('')
+                $("#service_ids").select2({
+                    data: services_list['vehicle_type_' + value]
+                }).trigger("change");
+            });
+        })
+    </script>
+
+@endsection
